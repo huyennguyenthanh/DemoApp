@@ -1,17 +1,18 @@
 version: '3.10'
-
+networks:
+  demo_app_huyen:
+    driver: bridge
 services:
-  postgres:
-    restart: always
-    image: postgres:10
+  db:
+    image: postgres:14.3
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=1234
-      - POSTGRES_DB=demodb
-    volumes:
-      - ./postgres-data/postgres:/var/lib/postgresql/data
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: gzr2efGPYs
+      POSTGRES_DB: demodb
     ports:
-      - "5432:5432"
+      - 5433:5432
+    networks:
+      - demo_app_huyen
   app:
     restart: always
     build: .
@@ -20,8 +21,8 @@ services:
     volumes:
       - .:/app
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+      - DATABASE_URL=postgresql://postgres:gzr2efGPYs@db:5432/demodb
     depends_on:
-    - postgres
-    
-  
+    - db
+    networks:
+      - demo_app_huyen
